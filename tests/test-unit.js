@@ -34,7 +34,7 @@ var app = null;
 var sessionCookie = null;
 
 describe('API', function(){
-	describe('Models', function(){
+	describe('Actions', function(){
 		before (function (done) {
 			done();
 		});
