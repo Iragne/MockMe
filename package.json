@@ -1,0 +1,26 @@
+{
+  "name": "ja-mock",
+  "version": "0.0.1",
+  "description": "Create easay mock url for express or file baed on model",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Iragne/npm-mock.git"
+  },
+  "keywords": [
+    "Facebook",
+    "twitter"
+  ],
+  "author": "Iragne",
+  "license": "MIT",
+  "dependencies" : {
+      "express": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "test": "make test-all"
+  }
+}
