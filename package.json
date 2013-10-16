@@ -8,13 +8,17 @@
     "url": "https://github.com/Iragne/npm-mock.git"
   },
   "keywords": [
-    "Facebook",
-    "twitter"
+    "mock",
+    "express",
+    "file"
   ],
   "author": "Iragne",
   "license": "MIT",
   "dependencies" : {
-      "express": "*"
+      "express": "*",
+      "argp":"*",
+      "mkdirp": "*",
+      "jade":"*"
   },
   "devDependencies": {
     "mocha": "*",

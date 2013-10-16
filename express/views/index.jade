@@ -1,0 +1,34 @@
+extends layout
+block content
+	.list
+		h1 URL Mock
+		table.table.table-bordered(style='width:100%')
+			thead
+				tr
+					th url
+					th Actions 
+			tbody
+				each data,url in locals.urls
+					tr
+						td  #{url}
+						td 
+							a(href=url) GO
+	.models
+		h1 Models
+		.accordion
+			each model in locals.models
+				.accordion-group
+					.accordion-heading
+						a.accordion-toggle(data-toggle="collapse",data-parent="#accordion2",href="#"+model.name) #{model.name}
+					.accordion-body.collapse(id=model.name)
+						table.table.table-bordered(style="width:450px")
+							thead
+								tr
+									th Name
+									th Type
+							each val in Object.keys(model.def)
+								tbody
+									tr
+										td #{val}
+										td(style="width:200px") #{model.def[val]}
+

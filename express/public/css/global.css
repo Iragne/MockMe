@@ -1,0 +1,108 @@
+body {
+  background: white ;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: normal;
+}
+* {
+/*  padding: 0px;
+  margin: 0px;*/
+}
+
+a:link {
+  -webkit-tap-highlight-color: #ff5e99;
+}
+
+a:hover,
+a:active {
+  outline: none;
+}
+
+a,
+a:active,
+a:visited {
+
+}
+
+a:hover {
+  color: #036;
+}
+
+table th{
+    text-align: left;
+}
+
+.f-left {
+  font-size: 8pt;
+  text-align: left;
+  float: left;
+}
+
+.f-right {
+  font-size: 8pt;
+  text-align: right;
+  float: right;
+}
+
+
+
+h1.title {
+  margin-top: 50px;
+  color: #ffffff;
+  text-align: center;
+}
+table,table tr,table tr td,table tr th{
+    border-collapse: collapse;
+}
+
+table{
+    width: 100%;
+}
+
+/******************************************* LAYOUT ***********************************************/
+
+#content{
+    
+    margin: auto;
+}
+
+#jai-header{
+    border-bottom: #CCC 1px dashed;
+    top:0;
+    padding-top: 5px;
+    position: fixed;
+    width: 100%;
+    background: white;
+}
+
+#jai-content{
+    margin: 50px 0px 30px 0px;
+}
+
+/*** logo ***/
+#jai-header #logo{
+    margin-right: 20px;
+    margin-left: 10px;
+}
+
+/******************************************* LAYOUT ***********************************************/
+
+
+/******************************************* LIST ***********************************************/
+.list table thead{
+     border-bottom: 1px solid #DDDDDD;
+     background: #F0F0F0;
+}
+.list table th,td{
+    padding: 4px;
+}
+
+.list table tr:nth-child(2n) {
+    background: none repeat scroll 0 0 #F9F9F9;
+}
+
+/******************************************* LIST ***********************************************/
+
+
+  
