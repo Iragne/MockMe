@@ -1,11 +1,11 @@
 {
-  "name": "ja-mock",
+  "name": "mock-me",
   "version": "0.0.1",
   "description": "Create easay mock url for express or file baed on model",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Iragne/npm-mock.git"
+    "url": "https://github.com/Iragne/MockMe.git"
   },
   "keywords": [
     "mock",
