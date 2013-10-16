@@ -28,7 +28,7 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var express = require('express');
 
-var argv = argp.description ("Npm Mock. the mock generator")
+var argv = argp.description ("Mock Me. the mock generator")
     .email ("admin@jast-io.com")
     .body ()
 		.text (" Arguments:")
@@ -47,6 +47,7 @@ var argv = argp.description ("Npm Mock. the mock generator")
 
 
 try{
+
 	var models = require(argv.models);
 	var actions = require(argv.actions);
 

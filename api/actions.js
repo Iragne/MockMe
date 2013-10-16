@@ -28,16 +28,40 @@ module.exports = {
 	modules:[
 		{
 			name:"User",
-			path:"/api/0.1/:key/",
+			path:"/api/0.1/:key/users/",
 			actions:[
 				{
 					name:"user",
-					uri:"users/:mrlid",
+					uri:":id",
 					output:{
 						User:"User"
 					}
 				},
+				{
+					name:"search",
+					uri:":keyword",
+					output:{
+						list:{
+							type:[],
+							number:"5",
+							model:"User"
+						}
+					}
+				},
 			]
 		},
+		{
+			name:"Message",
+			path:"/api/0.1/:key/message/",
+			actions:[
+				{
+					name:"get message",
+					uri:":id",
+					output:{
+						Message:"Message"
+					}
+				},
+			]
+		}
 	]
 };
