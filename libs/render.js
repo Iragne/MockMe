@@ -93,6 +93,7 @@ var renderOutputModel = module.exports.renderOutputModel = function (format,mode
 var is_model = function (obj,models){
 	"use strict";
 	for (var i = 0; i < Object.keys(models).length; i++) {
+		//console.log(obj,models);
 		var attr = Object.keys(models)[i];
 		var found = true;
 		if (Object.keys(obj).length != Object.keys(models[attr]()).length)
@@ -116,7 +117,7 @@ var is_model = function (obj,models){
 var rendermodel = function (model,models){
 	"use strict";
 	var ret = {};
-	//console.log(model);
+	//console.log("Model",model);
 	for (var i = 0; i < Object.keys(model).length; i++) {
 		var attr = Object.keys(model)[i];
 		var val = model[attr];
@@ -127,7 +128,7 @@ var rendermodel = function (model,models){
 				ret[attr] = "Float";
 			}
 		}else{
-			if (is_string(val)){
+			if (is_string(val) || val === null){
 				ret[attr] = "String";
 			}else{
 				if (is_array(val)){
@@ -157,8 +158,14 @@ var renderModelsHtml = module.exports.renderModelsHtml = function(models){
 	for (var i = 0; i < Object.keys(models).length; i++) {
 		var attr = Object.keys(models)[i];
 		if (attr.indexOf("incomplete") < 0){
-			var r_m = {name:attr,def:rendermodel(models[attr](),models)};
-			r_models.push(r_m);
+			console.log("PROCESS",attr);
+			var mod = models[attr]();
+			if (mod === null){
+				console.log(attr, "model not found");
+			}else{
+				var r_m = {name:attr,def:rendermodel(mod,models)};
+				r_models.push(r_m);
+			}
 		}
 	}
 	return r_models;
