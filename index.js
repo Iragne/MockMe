@@ -28,6 +28,11 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var express = require('express');
 
+var is_object = function(obj){
+	"use strict";
+    return obj === Object(obj);
+};
+
 var argv = argp.description ("Mock Me. the mock generator")
     .email ("admin@jast-io.com")
     .body ()
@@ -56,10 +61,17 @@ try{
 		for (var j = 0; j < module.actions.length; j++) {
 			var action = module.actions[j];
 			var uri = module.path + action.uri;
-			var output = render.renderOutputModel(action.output,models,action.output);
-			if (output)
+			var output = render.renderOutputModel(action.output,models,action.output,null);
+			if (output){
 				map_action_express[uri] = output;
-			else
+				if(action.consistency === false){
+					//console.log("Dynamyc",uri);
+					map_action_express[uri] = {render:function (action,models,url_params){ 
+						//console.log(action);
+						return render.renderOutputModel(action.output,models,action.output,url_params);
+					},param:action};
+				}
+			}else
 				console.log("Error output not found for action",action);
 		}
 	}
@@ -82,17 +94,31 @@ try{
 		app.use(express.static(__dirname + '/express/public'));
 		app.set('view engine', 'jade');
 		app.set('views', __dirname + '/express/views');
-
+		
+		var isFunction = function (functionToCheck) {
+			var getType = {};
+			return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+		}
 		var ar = Object.keys(map_action_express);
 		var renderExpress = function (app,data,file_map){
 			app.get(file_map, function(req, res){
-				res.json(data);
+				if (isFunction(data))
+					res.json(data(req.params));
+				else
+					res.json(data);
 			});
 		};
 		for (var i = 0; i < ar.length; i++) {
 			var file_map = ar[i];
 			var data = map_action_express[file_map];
-			renderExpress(app,data,file_map);
+			(function (data){
+				if (is_object(data) && data.render !== undefined){
+					renderExpress(app,function (url_params){
+						return data.render(data.param,models,url_params);
+					},file_map);
+				}else
+					renderExpress(app,data,file_map);
+			})(data);
 		}
 		var r_models = render.renderModelsHtml(models);
 		
@@ -130,6 +156,8 @@ try{
 		for (var i = 0; i < ar.length; i++) {
 			var file_map = ar[i];
 			var data = map_action_express[file_map];
+			if (data.param != data.render && data.param !== undefined)
+				data = data.render(data.param,{});
 			create_file(argv.out + "/" + file_map,JSON.stringify(data,null,"\t"));
 		}
 	}

@@ -50,7 +50,7 @@ var is_float = function(n) {
 	return is_number(n) && ! is_int(n);
 };
 
-var renderOutputModel = module.exports.renderOutputModel = function (format,models,original){
+var renderOutputModel = module.exports.renderOutputModel = function (format,models,original,url_params){
 	"use strict";
 	var ret = {};
 	var i = 0;
@@ -59,31 +59,31 @@ var renderOutputModel = module.exports.renderOutputModel = function (format,mode
 			if (is_array(format.type)){
 				ret = [];
 				for (i = 0; i < parseInt(format.number,10); i++) {
-					ret.push(renderOutputModel(format.model,models,original));
+					ret.push(renderOutputModel(format.model,models,original,url_params));
 				}
 			}
 		}else{
 			if (is_object(format)){
 				for (i = 0; i < Object.keys(format).length; i++) {
 					var attr = Object.keys(format)[i];
-					ret[attr] = renderOutputModel(format[attr],models,original);
+					ret[attr] = renderOutputModel(format[attr],models,original,url_params);
 				}
 			}else{
 				if (is_string(format)){
 					if (models[format])
-						return models[format]();
+						return models[format]({params:url_params});
 					else{
-						console.log(original);
+						console.log("renderOutputModel",original);
 						throw "Error Model "+format;
 					}
 				}else{
-					console.log(original);
+					console.log("renderOutputModel",original);
 					throw "Error Model "+format;
 				}
 			}
 		}
 	}catch (e){
-		console.log(e,e.stack);
+		console.log("renderOutputModel",e,e.stack);
 		return null;
 	}
 

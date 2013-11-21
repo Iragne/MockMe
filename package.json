@@ -26,5 +26,8 @@
   },
   "scripts": {
     "test": "make test-all"
-  }
+  },
+  "bin": {
+    "mock-me": "index.js"
+  },
 }
