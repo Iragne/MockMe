@@ -29,5 +29,5 @@
   },
   "bin": {
     "mock-me": "index.js"
-  },
+  }
 }
