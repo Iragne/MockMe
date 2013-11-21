@@ -61,16 +61,17 @@ var getArray = function (model, number){
 };
 
 
-var Message = module.exports.Message = function (){
+var Message = module.exports.Message = function (options){
+	if (options) console.log(options);
 	return {
-		message_id:getSequence("messages"),
+		message_id: options && options.params ? parseInt(options.params.id,10) : getSequence("messages"),
 		message_text: getSequenceCircular(["hello","fine","and you","me too"]),
 	};
 };
 
 
 
-var User = module.exports.User = function (){
+var User = module.exports.User = function (options){
 	return {
 		user_id:getSequence("users"),
 		user_login:"TestUser",

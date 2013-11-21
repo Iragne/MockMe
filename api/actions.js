@@ -57,6 +57,7 @@ module.exports = {
 				{
 					name:"get message",
 					uri:":id",
+					consistency:false,
 					output:{
 						Message:"Message"
 					}
