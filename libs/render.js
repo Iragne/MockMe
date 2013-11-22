@@ -59,7 +59,9 @@ var renderOutputModel = module.exports.renderOutputModel = function (format,mode
 			if (is_array(format.type)){
 				ret = [];
 				for (i = 0; i < parseInt(format.number,10); i++) {
-					ret.push(renderOutputModel(format.model,models,original,url_params));
+					var url_params2 = url_params || {};
+					url_params2.index = i;
+					ret.push(renderOutputModel(format.model,models,original,url_params2));
 				}
 			}
 		}else{
@@ -70,6 +72,7 @@ var renderOutputModel = module.exports.renderOutputModel = function (format,mode
 				}
 			}else{
 				if (is_string(format)){
+					//console.log("renderOutputModel",original);
 					if (models[format])
 						return models[format]({params:url_params});
 					else{
@@ -128,7 +131,7 @@ var rendermodel = function (model,models){
 				ret[attr] = "Float";
 			}
 		}else{
-			if (is_string(val) || val === null){
+			if (is_string(val) || val === null || val === undefined){
 				ret[attr] = "String";
 			}else{
 				if (is_array(val)){
