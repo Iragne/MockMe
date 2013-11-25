@@ -1,6 +1,6 @@
 {
   "name": "mock-me",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Create easay mock url for express or file baed on model",
   "main": "index.js",
   "repository": {
