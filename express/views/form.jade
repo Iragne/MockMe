@@ -1,0 +1,9 @@
+extends layout
+block content
+	h1 Form to #{path}
+	form(method='post', action='#{path}')
+		each param in params
+			p
+				span #{param} :
+				input(type='text',name='#{param}')
+		input(type='submit')

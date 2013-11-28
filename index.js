@@ -25,6 +25,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var express = require('express');
+var url = require('url');
 
 var render = require('./libs/render.js');
 
@@ -83,14 +84,14 @@ for (var i = 0; i < actions.modules.length; i ++) {
 					},
 					method: action.method || 'GET',
 				};
+				if (action.post_params) {
+					map_action_express[uri].post_params = action.post_params;
+				}
 				if (action.consistency === false) {
-					map_action_express[uri] = {
-						render: function (action,models,url_params) {
-							return render.renderOutputModel(action.output, models, action.output, url_params);
-						},
-						param: action,
-						method: action.method || 'GET',
+					map_action_express[uri].render = function (action,models,url_params) {
+						return render.renderOutputModel(action.output, models, action.output, url_params);
 					};
+					map_action_express[uri].param = action;
 				}
 			}
 			else {
@@ -155,8 +156,13 @@ else {
 		var m = data.method.toLowerCase();
 		console.log("Add url :", m,file_map);
 		app[m](file_map, function(req, res){
+			var http_params = {method: 'GET'};
+			if (req.method == 'POST') {
+				http_params.method = 'POST',
+				http_params.body_www_forms = req.body;
+			}
 			if (isFunction(output)) {
-				res.json(output(req.params, {method: 'GET'}));
+				res.json(output(req.params, http_params));
 			}
 			else {
 				res.json(output);
@@ -184,6 +190,12 @@ else {
 			urls: map_action_express,
 			models: r_models
 		});
+	});
+
+	app.get("/form", function(req, res){
+		var parts = url.parse(req.url, true);
+  	var query = parts.query;
+		res.render("form", {path: query.path, params: query.params.split(',')});
 	});
 
 	app.listen(port);

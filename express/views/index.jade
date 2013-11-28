@@ -13,8 +13,16 @@ block content
 					tr
 						td #{data.method}
 						td #{url}
+							- if (data.post_params) {
+								span [#{data.post_params}]
+							- }
 						td
-							a(href=url) GO
+							- if (data.post_params) {
+								a(href='form?path=#{url}&params=#{data.post_params}') GO
+							- }
+							- else {
+								a(href=url) GO
+							- }
 	.models
 		h1 Models
 		.accordion
