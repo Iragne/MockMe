@@ -172,7 +172,6 @@ var renderModelsHtml = module.exports.renderModelsHtml = function(models){
 	for (var i = 0; i < Object.keys(models).length; i++) {
 		var attr = Object.keys(models)[i];
 		if (attr.indexOf("incomplete") < 0){
-			console.log("PROCESS",attr);
 			var mod = models[attr]();
 			if (mod === null){
 				console.log(attr, "model not found");

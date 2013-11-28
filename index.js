@@ -153,7 +153,7 @@ else {
 	var ar = Object.keys(map_action_express);
 	var renderExpress = function (app, data, output, file_map) {
 		var m = data.method.toLowerCase();
-		console.log(m,file_map);
+		console.log("Add url :", m,file_map);
 		app[m](file_map, function(req, res){
 			if (isFunction(output)) {
 				res.json(output(req.params, {method: 'GET'}));
