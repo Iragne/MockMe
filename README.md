@@ -11,7 +11,7 @@ npm install mock-me
 
 Run
 ===
-node index.js -m ./api/models.js -a ./api/actions.js  -p 8080 
+node index.js -m ./api/models.js -a ./api/actions.js  -p 8080
 
 ```
 node index.js --help

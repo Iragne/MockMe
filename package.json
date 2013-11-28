@@ -21,6 +21,7 @@
       "jade":"*"
   },
   "devDependencies": {
+    "supervisor": "*",
     "mocha": "*",
     "should": "*"
   },
