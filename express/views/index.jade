@@ -5,13 +5,15 @@ block content
 		table.table.table-bordered(style='width:100%')
 			thead
 				tr
-					th url
-					th Actions 
+					th Method
+					th Url
+					th Actions
 			tbody
-				each data,url in locals.urls
+				each data, url in locals.urls
 					tr
-						td  #{url}
-						td 
+						td #{data.method}
+						td #{url}
+						td
 							a(href=url) GO
 	.models
 		h1 Models

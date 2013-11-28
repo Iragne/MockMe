@@ -65,20 +65,31 @@ var actions = require('./' + argv.actions);
 for (var i = 0; i < actions.modules.length; i ++) {
 	var module = actions.modules[i];
 	for (var j = 0; j < module.actions.length; j ++) {
-		var action = module.actions[j];
-		var uri = module.path + action.uri;
-		var output = render.renderOutputModel(action.output, models, action.output, null);
-		if (output){
-			map_action_express[uri] = output;
-			if(action.consistency === false){
-				map_action_express[uri] = {render:function (action,models,url_params) {
-					return render.renderOutputModel(action.output, models, action.output, url_params);
-				},param:action};
+		(function() {
+			var action = module.actions[j];
+			var uri = module.path + action.uri;
+			var output = render.renderOutputModel(action.output, models, action.output, null);
+			if (output){
+				map_action_express[uri] = {
+					render: function() {
+						return output;
+					},
+					method: action.method || 'GET',
+				};
+				if (action.consistency === false) {
+					map_action_express[uri] = {
+						render:function (action,models,url_params) {
+							return render.renderOutputModel(action.output, models, action.output, url_params);
+						},
+						param: action,
+						method: action.method || 'GET',
+					};
+				}
 			}
-		}
-		else {
-			console.log("Error output not found for action",action);
-		}
+			else {
+				console.log("Error output not found for action",action);
+			}
+		})();
 	}
 }
 
@@ -131,7 +142,7 @@ else {
 		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 	};
 	var ar = Object.keys(map_action_express);
-	var renderExpress = function (app,data,file_map) {
+	var renderExpress = function (app, data, file_map) {
 		app.get(file_map, function(req, res){
 			if (isFunction(data)) {
 				res.json(data(req.params));
@@ -147,18 +158,21 @@ else {
 		(function (data){
 			if (is_object(data) && data.render !== undefined) {
 				renderExpress(app, function (url_params) {
-					return data.render(data.param,models,url_params);
+					return data.render(data.param, models, url_params);
 				},file_map);
 			}
 			else {
-				renderExpress(app,data,file_map);
+				renderExpress(app, data, file_map);
 			}
 		})(data);
 	}
 	var r_models = render.renderModelsHtml(models);
 
 	app.get("/", function(req, res){
-		res.render("index",{urls:map_action_express,models:r_models});
+		res.render("index", {
+			urls: map_action_express,
+			models: r_models
+		});
 	});
 
 	app.listen(port);
