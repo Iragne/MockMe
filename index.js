@@ -144,14 +144,15 @@ else {
 		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 	};
 	var ar = Object.keys(map_action_express);
-	var renderExpress = function (app, method, data, file_map) {
-		var m = method.toLowerCase();
+	var renderExpress = function (app, data, output, file_map) {
+		var m = data.method.toLowerCase();
+		console.log(m,file_map);
 		app[m](file_map, function(req, res){
-			if (isFunction(data)) {
-				res.json(data(req.params, {method: 'GET'}));
+			if (isFunction(output)) {
+				res.json(output(req.params, {method: 'GET'}));
 			}
 			else {
-				res.json(data);
+				res.json(output);
 			}
 		});
 	};
@@ -160,12 +161,12 @@ else {
 		var data = map_action_express[file_map];
 		(function (data){
 			if (is_object(data) && data.render !== undefined) {
-				renderExpress(app, function (url_params, http_params) {
+				renderExpress(app, data, function (url_params, http_params) {
 					return data.render(data.param, models, {params: url_params, http_params: http_params});
 				},file_map);
 			}
 			else {
-				renderExpress(app, "GET", data, file_map);
+				renderExpress(app, {method: 'GET'}, data, file_map);
 			}
 		})(data);
 	}
