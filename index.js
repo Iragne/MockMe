@@ -144,8 +144,10 @@ else {
 		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 	};
 	var ar = Object.keys(map_action_express);
-	var renderExpress = function (app, data, file_map) {
-		app.get(file_map, function(req, res){
+	var renderExpress = function (app, method, data, file_map) {
+		var m = method.toLowerCase();
+		console.log(m,file_map);
+		app[m](file_map, function(req, res){
 			if (isFunction(data)) {
 				res.json(data(req.params));
 			}
@@ -159,12 +161,12 @@ else {
 		var data = map_action_express[file_map];
 		(function (data){
 			if (is_object(data) && data.render !== undefined) {
-				renderExpress(app, function (url_params) {
+				renderExpress(app, data.method, function (url_params) {
 					return data.render(data.param, models, url_params);
 				},file_map);
 			}
 			else {
-				renderExpress(app, data, file_map);
+				renderExpress(app, "GET", data, file_map);
 			}
 		})(data);
 	}
