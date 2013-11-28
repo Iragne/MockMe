@@ -72,7 +72,7 @@ var getArray = function (model, number) {
 
 var Message = module.exports.Message = function (options){
 	return {
-		message_id: options && options.params ? parseInt(options.params.id,10) : getSequence("messages"),
+		message_id: options && options.params ? parseInt(options.params.id,10) || getSequence("messages") : getSequence("messages"),
 		message_text: getSequenceCircular(["hello","fine","and you","me too"]),
 	};
 };

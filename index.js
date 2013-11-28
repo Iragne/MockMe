@@ -144,8 +144,9 @@ else {
 		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 	};
 	var ar = Object.keys(map_action_express);
-	var renderExpress = function (app, data, file_map) {
-		app.get(file_map, function(req, res){
+	var renderExpress = function (app, method, data, file_map) {
+		var m = method.toLowerCase();
+		app[m](file_map, function(req, res){
 			if (isFunction(data)) {
 				res.json(data(req.params, {method: 'GET'}));
 			}
@@ -164,7 +165,7 @@ else {
 				},file_map);
 			}
 			else {
-				renderExpress(app, data, file_map);
+				renderExpress(app, "GET", data, file_map);
 			}
 		})(data);
 	}

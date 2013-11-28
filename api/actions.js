@@ -33,13 +33,16 @@ module.exports = {
 				{
 					name:"user",
 					uri:":id",
+					consistency: true,
 					output:{
 						User:"User"
 					}
 				},
 				{
 					name:"search",
-					uri:":keyword",
+					uri:"search/:keyword",
+					consistency: false,
+					method:"POST",
 					output:{
 						list:{
 							type:[],
