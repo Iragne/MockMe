@@ -20,13 +20,15 @@
 // THE SOFTWARE.
 //
 
-var argp = require ("argp");
-var map_action_express = {};
-var render = require("./libs/render.js");
+var argp = require ('argp');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var express = require('express');
+
+var render = require('./libs/render.js');
+
+var map_action_express = {};
 
 var is_object = function(obj){
 	"use strict";
@@ -48,130 +50,120 @@ var argv = argp.description ("Mock Me. the mock generator")
         .version ("v0.0.1")
     .argv ();
 
-//console.log (argv);
-if (argv.models === null || argv.actions === null)
-	return ;
-else{
-	try{
-		
-		var models = require(argv.models);
-		var actions = require(argv.actions);
+if (argv.models === null) {
+	console.log('Please specify model file');
+	process.exit(1);
+}
+if (argv.actions === null) {
+	console.log('Please specify actions file');
+	process.exit(1);
+}
 
-		for (var i = 0; i < actions.modules.length; i++) {
-			var module = actions.modules[i];
-			for (var j = 0; j < module.actions.length; j++) {
-				var action = module.actions[j];
-				var uri = module.path + action.uri;
-				var output = render.renderOutputModel(action.output,models,action.output,null);
-				if (output){
-					map_action_express[uri] = output;
-					if(action.consistency === false){
-						//console.log("Dynamyc",uri);
-						map_action_express[uri] = {render:function (action,models,url_params){ 
-							//console.log(action);
-							return render.renderOutputModel(action.output,models,action.output,url_params);
-						},param:action};
-					}
-				}else
-					console.log("Error output not found for action",action);
+var models = require('./' + argv.models);
+var actions = require('./' + argv.actions);
+
+for (var i = 0; i < actions.modules.length; i ++) {
+	var module = actions.modules[i];
+	for (var j = 0; j < module.actions.length; j ++) {
+		var action = module.actions[j];
+		var uri = module.path + action.uri;
+		var output = render.renderOutputModel(action.output,models,action.output,null);
+		if (output){
+			map_action_express[uri] = output;
+			if(action.consistency === false){
+				//console.log("Dynamyc",uri);
+				map_action_express[uri] = {render:function (action,models,url_params) {
+					//console.log(action);
+					return render.renderOutputModel(action.output,models,action.output,url_params);
+				},param:action};
 			}
 		}
-
-		//console.log(map_action_express);
-
-		// for each (actions)
-		// create uri
-		// set path in map
-		// get Model resturl
-		//
-
-		if (argv.port){
-			var app = express();
-			app.use(express.compress());
-			app.use(express.logger());
-			app.use(express.bodyParser());
-			app.use(express.methodOverride());
-			app.use(express.cookieParser());
-			app.use(express.static(__dirname + '/express/public'));
-			app.set('view engine', 'jade');
-			app.set('views', __dirname + '/express/views');
-			
-			var isFunction = function (functionToCheck) {
-				var getType = {};
-				return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-			};
-			var ar = Object.keys(map_action_express);
-			var renderExpress = function (app,data,file_map){
-				app.get(file_map, function(req, res){
-					if (isFunction(data))
-						res.json(data(req.params));
-					else
-						res.json(data);
-				});
-			};
-			for (var i = 0; i < ar.length; i++) {
-				var file_map = ar[i];
-				var data = map_action_express[file_map];
-				(function (data){
-					if (is_object(data) && data.render !== undefined){
-						renderExpress(app,function (url_params){
-							return data.render(data.param,models,url_params);
-						},file_map);
-					}else
-						renderExpress(app,data,file_map);
-				})(data);
-			}
-			var r_models = render.renderModelsHtml(models);
-			
-			app.get("/", function(req, res){
-				res.render("index",{urls:map_action_express,models:r_models});
-			});
-			app.listen(parseInt(argv.port,10));
+		else {
+			console.log("Error output not found for action",action);
 		}
-
-		// if app
-		// start EXPRESS
-		// bind app
-		// start listen
-
-		if (argv.out){
-			var create_file = function (dirto,data) {
-				"use strict";
-				dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");
-				dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");
-				dirto = path.normalize(dirto);
-				if (dirto.substring(0,1) != "/")
-					dirto = path.normalize(__dirname+"/"+dirto);
-				var dir = path.dirname(dirto);
-				//console.log(dir);
-				mkdirp(dir, "0777", function (err) {
-					if(err)
-						console.log(err);
-					fs.writeFile(dirto, data, function(err) {
-						if (err)
-							console.log(err);
-					});
-				});
-			};
-			var ar = Object.keys(map_action_express);
-			for (var i = 0; i < ar.length; i++) {
-				var file_map = ar[i];
-				var data = map_action_express[file_map];
-				if (data.param != data.render && data.param !== undefined)
-					data = data.render(data.param,{});
-				create_file(argv.out + "/" + file_map,JSON.stringify(data,null,"\t"));
-			}
-		}
-	//if out
-	// create file 
-	// async file
-	// create path
-	// create file
-	// write
-	// end async
-
-
-	}catch(e){
-		console.log("Error: ","actions file not found",argv.actions,"models file not found",argv.models,e,e.stack);
 	}
+}
+
+if (argv.out){
+	var create_file = function (dirto,data) {
+		"use strict";
+		dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");
+		dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");dirto = dirto.replace(":","");
+		dirto = path.normalize(dirto);
+		if (dirto.substring(0,1) != "/")
+			dirto = path.normalize(__dirname+"/"+dirto);
+		var dir = path.dirname(dirto);
+		//console.log(dir);
+		mkdirp(dir, "0777", function (err) {
+			if(err)
+				console.log(err);
+			fs.writeFile(dirto, data, function(err) {
+				if (err)
+					console.log(err);
+			});
+		});
+	};
+	var ar = Object.keys(map_action_express);
+	for (var i = 0; i < ar.length; i++) {
+		var file_map = ar[i];
+		var data = map_action_express[file_map];
+		if (data.param != data.render && data.param !== undefined)
+			data = data.render(data.param,{});
+		create_file(argv.out + "/" + file_map,JSON.stringify(data,null,"\t"));
+	}
+}
+else {
+	var port = 8080;
+	if (argv.port) {
+		port = parseInt(argv.port, 10);
+	}
+
+	var app = express();
+	app.use(express.compress());
+	app.use(express.logger());
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(express.cookieParser());
+	app.use(express.static(__dirname + '/express/public'));
+	app.set('view engine', 'jade');
+	app.set('views', __dirname + '/express/views');
+
+	var isFunction = function (functionToCheck) {
+		var getType = {};
+		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+	};
+	var ar = Object.keys(map_action_express);
+	var renderExpress = function (app,data,file_map) {
+		app.get(file_map, function(req, res){
+			if (isFunction(data)) {
+				res.json(data(req.params));
+			}
+			else {
+				res.json(data);
+			}
+		});
+	};
+	for (var i = 0; i < ar.length; i++) {
+		var file_map = ar[i];
+		var data = map_action_express[file_map];
+		(function (data){
+			if (is_object(data) && data.render !== undefined) {
+				renderExpress(app, function (url_params) {
+					return data.render(data.param,models,url_params);
+				},file_map);
+			}
+			else {
+				renderExpress(app,data,file_map);
+			}
+		})(data);
+	}
+	var r_models = render.renderModelsHtml(models);
+
+	app.get("/", function(req, res){
+		res.render("index",{urls:map_action_express,models:r_models});
+	});
+
+	app.listen(port);
+
+	console.log('Mock me started at port', port)
 }
