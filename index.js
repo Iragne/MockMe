@@ -59,8 +59,15 @@ if (argv.actions === null) {
 	process.exit(1);
 }
 
-var models = require('./' + argv.models);
-var actions = require('./' + argv.actions);
+function process_path(p) {
+	if (p.match(/^\//)) {
+		return p;
+	}
+	return './' + p;
+}
+
+var models = require(process_path(argv.models));
+var actions = require(process_path(argv.actions));
 
 for (var i = 0; i < actions.modules.length; i ++) {
 	var module = actions.modules[i];
