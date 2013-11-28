@@ -21,22 +21,22 @@
 //
 
 
-var is_array = function(a){
+var is_array = function(a) {
 	"use strict";
     return Array.isArray(a);
 };
 
-var is_object = function(obj){
+var is_object = function(obj) {
 	"use strict";
     return obj === Object(obj);
 };
 
-var is_string = function(str){
+var is_string = function(str) {
 	"use strict";
 	return typeof str == 'string' || str instanceof String;
 };
 
-var is_number = function(n){
+var is_number = function(n) {
 	"use strict";
 	return typeof n === 'number' && parseFloat(n) == parseInt(n, 10) && !isNaN(n);
 };
@@ -50,42 +50,48 @@ var is_float = function(n) {
 	return is_number(n) && ! is_int(n);
 };
 
-var renderOutputModel = module.exports.renderOutputModel = function (format,models,original,url_params){
+var renderOutputModel = module.exports.renderOutputModel = function(format, models, original, url_params){
 	"use strict";
 	var ret = {};
 	var i = 0;
 	try {
-		if (format.type){
-			if (is_array(format.type)){
+		if (format.type) {
+			if (is_array(format.type)) {
 				ret = [];
 				for (i = 0; i < parseInt(format.number,10); i++) {
 					var url_params2 = url_params || {};
 					url_params2.index = i;
-					ret.push(renderOutputModel(format.model,models,original,url_params2));
-				}
-			}
-		}else{
-			if (is_object(format)){
-				for (i = 0; i < Object.keys(format).length; i++) {
-					var attr = Object.keys(format)[i];
-					ret[attr] = renderOutputModel(format[attr],models,original,url_params);
-				}
-			}else{
-				if (is_string(format)){
-					//console.log("renderOutputModel",original);
-					if (models[format])
-						return models[format]({params:url_params});
-					else{
-						console.log("renderOutputModel",original);
-						throw "Error Model "+format;
-					}
-				}else{
-					console.log("renderOutputModel",original);
-					throw "Error Model "+format;
+					ret.push(renderOutputModel(format.model, models, original, url_params2));
 				}
 			}
 		}
-	}catch (e){
+		else {
+			if (is_object(format)) {
+				for (i = 0; i < Object.keys(format).length; i++) {
+					var attr = Object.keys(format)[i];
+					ret[attr] = renderOutputModel(format[attr], models, original, url_params);
+				}
+			}
+			else {
+				if (is_string(format)) {
+					if (models[format]) {
+						return models[format]({
+							params:url_params
+						});
+					}
+					else {
+						console.log("renderOutputModel", original);
+						throw "Error Model " + format;
+					}
+				}
+				else {
+					console.log("renderOutputModel",original);
+					throw "Error Model " + format;
+				}
+			}
+		}
+	}
+	catch (e){
 		console.log("renderOutputModel",e,e.stack);
 		return null;
 	}
@@ -118,7 +124,7 @@ var is_model = function (obj, models){
 	return false;
 };
 
-var rendermodel = function (model,models){
+var rendermodel = function(model,models){
 	"use strict";
 	var ret = {};
 	for (var i = 0; i < Object.keys(model).length; i++) {

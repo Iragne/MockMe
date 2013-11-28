@@ -104,11 +104,13 @@ if (argv.out){
 		var dir = path.dirname(dirto);
 		//console.log(dir);
 		mkdirp(dir, "0777", function (err) {
-			if(err)
+			if(err) {
 				console.log(err);
+			}
 			fs.writeFile(dirto, data, function(err) {
-				if (err)
+				if (err) {
 					console.log(err);
+				}
 			});
 		});
 	};
