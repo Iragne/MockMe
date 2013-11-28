@@ -23,35 +23,44 @@
 
 
 var seq_map = {};
+
 var getSequence = function  (model,type,max) {
-	if(!seq_map[model])
+	if(!seq_map[model]) {
 		seq_map[model] = 1;
-	if (max === undefined)
+	}
+	if (max === undefined) {
 		max = 300000;
-	if (type === undefined)
+	}
+	if (type === undefined) {
 		return seq_map[model]++ % max;
+	}
 	return "D"+(seq_map[model]++)+"A";
 };
+
 var now = function  (model) {
 	return new Date().getTime();
 };
+
 var map_array = {};
+
 var getSequenceCircular = function (a_array,key){
 	var array = JSON.stringify(a_array);
-	if (key)
+	if (key) {
 		array = key;
-	if (map_array[array] === undefined)
+	}
+	if (map_array[array] === undefined) {
 		map_array[array] = 0;
-	
+	}
+
 	var ret =  a_array[map_array[array]];
-	map_array[array] = map_array[array]+1;
-	map_array[array] = (map_array[array])%a_array.length;
+	map_array[array] = map_array[array] + 1;
+	map_array[array] = (map_array[array]) % a_array.length;
 
 	//console.log(map_array[array],array);
 	return ret;
 };
 
-var getArray = function (model, number){
+var getArray = function (model, number) {
 	"use strict";
 	var ret = [];
 	for (var i = 0; i < number; i++) {
