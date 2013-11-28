@@ -50,7 +50,7 @@ var is_float = function(n) {
 	return is_number(n) && ! is_int(n);
 };
 
-var renderOutputModel = module.exports.renderOutputModel = function(format, models, original, url_params){
+var renderOutputModel = module.exports.renderOutputModel = function(format, models, original, params){
 	"use strict";
 	var ret = {};
 	var i = 0;
@@ -69,15 +69,13 @@ var renderOutputModel = module.exports.renderOutputModel = function(format, mode
 			if (is_object(format)) {
 				for (i = 0; i < Object.keys(format).length; i++) {
 					var attr = Object.keys(format)[i];
-					ret[attr] = renderOutputModel(format[attr], models, original, url_params);
+					ret[attr] = renderOutputModel(format[attr], models, original, params);
 				}
 			}
 			else {
 				if (is_string(format)) {
 					if (models[format]) {
-						return models[format]({
-							params:url_params
-						});
+						return models[format](params);
 					}
 					else {
 						console.log("renderOutputModel", original);
