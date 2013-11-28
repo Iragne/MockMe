@@ -93,25 +93,26 @@ var renderOutputModel = module.exports.renderOutputModel = function (format,mode
 	return ret;
 };
 
-var is_model = function (obj,models){
+var is_model = function (obj, models){
 	"use strict";
 	for (var i = 0; i < Object.keys(models).length; i++) {
-		//console.log(obj,models);
 		var attr = Object.keys(models)[i];
 		var found = true;
-		if (Object.keys(obj).length != Object.keys(models[attr]()).length)
+		if (Object.keys(obj).length != Object.keys(models[attr]()).length) {
 			found = false;
+		}
 		for (var j = 0; found && j < Object.keys(models[attr]()).length; j++) {
 			//console.log(obj);
 			var at = Object.keys(models[attr]())[j];
-			if (obj[at] === undefined){
+			if (obj[at] === undefined) {
 				found = false;
 				break;
 			}
 		}
 
-		if(found)
+		if(found) {
 			return attr;
+		}
 	}
 	//console.log("FOUND",obj);
 	return false;
@@ -120,32 +121,38 @@ var is_model = function (obj,models){
 var rendermodel = function (model,models){
 	"use strict";
 	var ret = {};
-	//console.log("Model",model);
 	for (var i = 0; i < Object.keys(model).length; i++) {
 		var attr = Object.keys(model)[i];
 		var val = model[attr];
-		if (is_number(val)){
-			if (is_int(val)){
+		if (is_number(val)) {
+			if (is_int(val)) {
 				ret[attr] = "Int";
-			}else{
+			}
+			else {
 				ret[attr] = "Float";
 			}
-		}else{
+		}
+		else if (val === true || val === false) {
+			ret[attr] = "Bool";
+		}
+		else {
 			if (is_string(val) || val === null || val === undefined){
 				ret[attr] = "String";
-			}else{
-				if (is_array(val)){
+			}
+			else {
+				if (is_array(val)) {
 					var m = "Undefined";
-					if (val.length){
+					if (val.length) {
 						m = is_model(val[0],models);
 					}
 					ret[attr] = "array<"+m+">";
-				}else{
-					//console.log(val);
-					var my_model = is_model(val,models);
-					if (is_object(val) && !my_model){
+				}
+				else {
+					var my_model = is_model(val, models);
+					if (is_object(val) && !my_model) {
 						ret[attr] = "Undefined model";//rendermodel(val, models);
-					}else{
+					}
+					else {
 						ret[attr] = my_model;
 					}
 				}
@@ -165,8 +172,12 @@ var renderModelsHtml = module.exports.renderModelsHtml = function(models){
 			var mod = models[attr]();
 			if (mod === null){
 				console.log(attr, "model not found");
-			}else{
-				var r_m = {name:attr,def:rendermodel(mod,models)};
+			}
+			else {
+				var r_m = {
+					name: attr,
+					def: rendermodel(mod, models)
+				};
 				r_models.push(r_m);
 			}
 		}

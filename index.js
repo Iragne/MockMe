@@ -67,14 +67,12 @@ for (var i = 0; i < actions.modules.length; i ++) {
 	for (var j = 0; j < module.actions.length; j ++) {
 		var action = module.actions[j];
 		var uri = module.path + action.uri;
-		var output = render.renderOutputModel(action.output,models,action.output,null);
+		var output = render.renderOutputModel(action.output, models, action.output, null);
 		if (output){
 			map_action_express[uri] = output;
 			if(action.consistency === false){
-				//console.log("Dynamyc",uri);
 				map_action_express[uri] = {render:function (action,models,url_params) {
-					//console.log(action);
-					return render.renderOutputModel(action.output,models,action.output,url_params);
+					return render.renderOutputModel(action.output, models, action.output, url_params);
 				},param:action};
 			}
 		}
