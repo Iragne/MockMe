@@ -78,7 +78,7 @@ for (var i = 0; i < actions.modules.length; i ++) {
 				};
 				if (action.consistency === false) {
 					map_action_express[uri] = {
-						render:function (action,models,url_params) {
+						render: function (action,models,url_params) {
 							return render.renderOutputModel(action.output, models, action.output, url_params);
 						},
 						param: action,
@@ -147,7 +147,7 @@ else {
 	var renderExpress = function (app, data, file_map) {
 		app.get(file_map, function(req, res){
 			if (isFunction(data)) {
-				res.json(data(req.params));
+				res.json(data(req.params, {method: 'GET'}));
 			}
 			else {
 				res.json(data);
@@ -159,8 +159,8 @@ else {
 		var data = map_action_express[file_map];
 		(function (data){
 			if (is_object(data) && data.render !== undefined) {
-				renderExpress(app, function (url_params) {
-					return data.render(data.param, models, url_params);
+				renderExpress(app, function (url_params, http_params) {
+					return data.render(data.param, models, {params: url_params, http_params: http_params});
 				},file_map);
 			}
 			else {
