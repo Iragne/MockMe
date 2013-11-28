@@ -7,6 +7,7 @@ block content
 				tr
 					th Method
 					th Url
+					th Doc
 					th Actions
 			tbody
 				each data, url in locals.urls
@@ -17,11 +18,27 @@ block content
 								span [#{data.post_params}]
 							- }
 						td
+							- if (data.doc) {
+								button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#myModal") Doc
+								div(class="modal fade", id="myModal", tabindex="-1",role="dialog")
+									div(class="modal-dialog")
+										div(class="modal-content")
+											div(class="modal-header")
+												button(type="button",class="close",data-dismiss="modal")
+													span &times;
+												h4 Modal title
+											div(class="modal-body")
+												span #{data.doc}
+											div(class="modal-footer")
+											button(type="button",class="btn btn-default btn-lg",data-dismiss="modal")
+												span Close
+							- }
+						td
 							- if (data.post_params) {
-								a(href='form?path=#{url}&params=#{data.post_params}') GO
+								a(href='form?path=#{url}&params=#{data.post_params}',class="btn btn-primary btn-lg") GO
 							- }
 							- else {
-								a(href=url) GO
+								a(href=url,class="btn btn-primary btn-lg") GO
 							- }
 	.models
 		h1 Models

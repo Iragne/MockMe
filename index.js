@@ -87,6 +87,9 @@ for (var i = 0; i < actions.modules.length; i ++) {
 				if (action.post_params) {
 					map_action_express[uri].post_params = action.post_params;
 				}
+				if (action.doc) {
+					map_action_express[uri].doc = action.doc;
+				}
 				if (action.consistency === false) {
 					map_action_express[uri].render = function (action,models,url_params) {
 						return render.renderOutputModel(action.output, models, action.output, url_params);
