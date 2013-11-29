@@ -106,7 +106,6 @@ var is_model = function (obj, models){
 			found = false;
 		}
 		for (var j = 0; found && j < Object.keys(models[attr]()).length; j++) {
-			//console.log(obj);
 			var at = Object.keys(models[attr]())[j];
 			if (obj[at] === undefined) {
 				found = false;
@@ -118,9 +117,26 @@ var is_model = function (obj, models){
 			return attr;
 		}
 	}
-	//console.log("FOUND",obj);
 	return false;
 };
+
+function getPrimitiveType(val) {
+	if (is_number(val)) {
+		if (is_int(val)) {
+			return "Int";
+		}
+		else {
+			return "Float";
+		}
+	}
+	if (val === true || val === false) {
+		return "Bool";
+	}
+	if (is_string(val) || val === null || val === undefined){
+		return "String";
+	}
+	return null;
+}
 
 var rendermodel = function(model,models){
 	"use strict";
@@ -128,37 +144,31 @@ var rendermodel = function(model,models){
 	for (var i = 0; i < Object.keys(model).length; i++) {
 		var attr = Object.keys(model)[i];
 		var val = model[attr];
-		if (is_number(val)) {
-			if (is_int(val)) {
-				ret[attr] = "Int";
-			}
-			else {
-				ret[attr] = "Float";
-			}
-		}
-		else if (val === true || val === false) {
-			ret[attr] = "Bool";
+		var type = getPrimitiveType(val);
+		if (type) {
+			ret[attr] = type;
 		}
 		else {
-			if (is_string(val) || val === null || val === undefined){
-				ret[attr] = "String";
-			}
-			else {
-				if (is_array(val)) {
-					var m = "Undefined";
-					if (val.length) {
-						m = is_model(val[0],models);
-					}
-					ret[attr] = "array<"+m+">";
-				}
-				else {
-					var my_model = is_model(val, models);
-					if (is_object(val) && !my_model) {
-						ret[attr] = "Undefined model";//rendermodel(val, models);
+			if (is_array(val)) {
+				var m = "Undefined";
+				if (val.length) {
+					var subType = getPrimitiveType(val[0]);
+					if (subType) {
+						m = subType;
 					}
 					else {
-						ret[attr] = my_model;
+						m = is_model(val[0], models);
 					}
+				}
+				ret[attr] = "array<" + m + ">";
+			}
+			else {
+				var my_model = is_model(val, models);
+				if (is_object(val) && !my_model) {
+					ret[attr] = "Undefined model";
+				}
+				else {
+					ret[attr] = my_model;
 				}
 			}
 		}
