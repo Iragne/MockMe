@@ -15,15 +15,15 @@
   "author": "Iragne",
   "license": "MIT",
   "dependencies" : {
-      "express": "*",
-      "argp":"*",
-      "mkdirp": "*",
-      "jade":"*"
+      "express": "3.4.5",
+      "argp": "0.2.1",
+      "mkdirp": "0.3.5",
+      "jade": "0.35.0"
   },
   "devDependencies": {
-    "supervisor": "*",
-    "mocha": "*",
-    "should": "*"
+    "supervisor": "0.5.6",
+    "mocha": "1.14.0",
+    "should": "2.1.0"
   },
   "scripts": {
     "test": "make test-all"
