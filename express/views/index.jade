@@ -10,6 +10,7 @@ block content
 					th Doc
 					th Actions
 			tbody
+				- index = 0
 				each data, url in locals.urls
 					tr
 						td #{data.method}
@@ -19,19 +20,18 @@ block content
 							- }
 						td
 							- if (data.doc) {
-								button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#myModal") Doc
-								div(class="modal fade", id="myModal", tabindex="-1",role="dialog")
+								- index = index + 1
+								button(class="btn btn-primary btn-lg",data-toggle="modal",data-target="#doc#{index}") Doc
+								div(class="modal fade", id="doc#{index}", tabindex="-1",role="dialog")
 									div(class="modal-dialog")
 										div(class="modal-content")
 											div(class="modal-header")
-												button(type="button",class="close",data-dismiss="modal")
-													span &times;
+												button(type="button",class="close",data-dismiss="modal") &times;
 												h4 #{url}
 											div(class="modal-body")
 												span #{data.doc}
 											div(class="modal-footer")
-											button(type="button",class="btn btn-default btn-lg",data-dismiss="modal")
-												span Close
+												button(type="button",class="btn btn-default",data-dismiss="modal") Close
 							- }
 						td
 							- if (data.post_params) {
