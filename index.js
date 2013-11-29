@@ -67,6 +67,9 @@ function process_path(p) {
 	return './' + p;
 }
 
+console.log("Loading models from", argv.models);
+console.log("Loading actions from", argv.actions);
+
 var models = require(process_path(argv.models));
 var actions = require(process_path(argv.actions));
 
