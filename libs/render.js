@@ -20,35 +20,7 @@
 // THE SOFTWARE.
 //
 
-
-var is_array = function(a) {
-	"use strict";
-    return Array.isArray(a);
-};
-
-var is_object = function(obj) {
-	"use strict";
-    return obj === Object(obj);
-};
-
-var is_string = function(str) {
-	"use strict";
-	return typeof str == 'string' || str instanceof String;
-};
-
-var is_number = function(n) {
-	"use strict";
-	return typeof n === 'number' && parseFloat(n) == parseInt(n, 10) && !isNaN(n);
-};
-var is_int = function(n) {
-	"use strict";
-	return parseInt(n,10) === n;
-};
-
-var is_float = function(n) {
-	"use strict";
-	return is_number(n) && ! is_int(n);
-};
+var is = require('is_');
 
 var renderOutputModel = module.exports.renderOutputModel = function(format, models, original, params){
 	"use strict";
@@ -56,7 +28,7 @@ var renderOutputModel = module.exports.renderOutputModel = function(format, mode
 	var i = 0;
 	try {
 		if (format.type) {
-			if (is_array(format.type)) {
+			if (is.is_array(format.type)) {
 				ret = [];
 				for (i = 0; i < parseInt(format.number,10); i++) {
 					var url_params2 = url_params || {};
@@ -66,14 +38,14 @@ var renderOutputModel = module.exports.renderOutputModel = function(format, mode
 			}
 		}
 		else {
-			if (is_object(format)) {
+			if (is.is_object(format)) {
 				for (i = 0; i < Object.keys(format).length; i++) {
 					var attr = Object.keys(format)[i];
 					ret[attr] = renderOutputModel(format[attr], models, original, params);
 				}
 			}
 			else {
-				if (is_string(format)) {
+				if (is.is_string(format)) {
 					if (models[format]) {
 						return models[format](params);
 					}
@@ -121,18 +93,16 @@ var is_model = function (obj, models){
 };
 
 function getPrimitiveType(val) {
-	if (is_number(val)) {
-		if (is_int(val)) {
-			return "Int";
-		}
-		else {
-			return "Float";
-		}
+	if (is.is_int(val)) {
+		return "Int";
 	}
-	if (val === true || val === false) {
+	if (is.is_float(val)) {
+		return "Float";
+	}
+	if (is.is_boolean(val)) {
 		return "Bool";
 	}
-	if (is_string(val) || val === null || val === undefined){
+	if (is.is_string(val)|| val === null || val === undefined){
 		return "String";
 	}
 	return null;
@@ -149,7 +119,7 @@ var rendermodel = function(model,models){
 			ret[attr] = type;
 		}
 		else {
-			if (is_array(val)) {
+			if (is.is_array(val)) {
 				var m = "Undefined";
 				if (val.length) {
 					var subType = getPrimitiveType(val[0]);
@@ -164,7 +134,7 @@ var rendermodel = function(model,models){
 			}
 			else {
 				var my_model = is_model(val, models);
-				if (is_object(val) && !my_model) {
+				if (is.is_object(val) && !my_model) {
 					ret[attr] = "Undefined model";
 				}
 				else {

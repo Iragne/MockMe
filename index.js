@@ -26,15 +26,11 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var express = require('express');
 var url = require('url');
+var is = require('is_');
 
 var render = require('./libs/render.js');
 
 var map_action_express = {};
-
-var is_object = function(obj){
-	"use strict";
-    return obj === Object(obj);
-};
 
 var argv = argp.description ("Mock Me. the mock generator")
     .email ("admin@jast-io.com")
@@ -179,7 +175,7 @@ else {
 		var file_map = ar[i];
 		var data = map_action_express[file_map];
 		(function (data){
-			if (is_object(data) && data.render !== undefined) {
+			if (is.is_object(data) && data.render !== undefined) {
 				renderExpress(app, data, function (url_params, http_params) {
 					return data.render(data.param, models, {params: url_params, http_params: http_params});
 				},file_map);
